@@ -1,5 +1,5 @@
 # Korjani-API
-This is an api for a blog. Altschool Africa Nodejs second semester project 
+This is an api for an e-commerce shop. 
 
 ---
 ## Built with
