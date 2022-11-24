@@ -4,7 +4,7 @@ const moment = require('moment')
 
 
 exports.createProduct =  async (req,res) => {
-    const {name,desc,images,categories,size,color,price,quantity} = req.body
+    const {name,desc,image,categories,size,color,price} = req.body
     console.log(req.file.path)
     try{
         const product = new Product({
@@ -15,7 +15,6 @@ exports.createProduct =  async (req,res) => {
             size,
             color,
             price,
-            quantity,
             owner: req.user.id
         })
         await product.save()
@@ -97,7 +96,10 @@ exports.deleteProduct = async (req,res) => {
 exports.getProducts = async (req,res) => {
     try{
         // const { query } = req
-        const { name, color, price, categories, size, createdAt, order_by, order = 'asc', page = 1, per_page = 2 } = req.query
+        const { name, 
+            color, 
+            price, 
+            categories, size, createdAt, order_by, order = 'asc', page = 1, per_page = 2 } = req.query
 
         const findQuery = {}
         const sortQuery = {}
@@ -128,25 +130,25 @@ exports.getProducts = async (req,res) => {
                 $lt: moment(createdAt).endOf('day').toDate(),
             }
         }
-        // separate sort attributes by comma
-        const sortAttributes = order_by.split(',')
+        // // separate sort attributes by comma
+        // const sortAttributes = order_by.split(',')
 
-        for(const attribute of sortAttributes){
-            if(order === 'asc' && order_by){
-            sortQuery[order_by] = 1
-            }
-            if(order === 'desc' && order_by){
-                sortQuery[order_by] = -1
-            }
-        }
+        // for(const attribute of sortAttributes){
+        //     if(order === 'asc' && order_by){
+        //     sortQuery[order_by] = 1
+        //     }
+        //     if(order === 'desc' && order_by){
+        //         sortQuery[order_by] = -1
+        //     }
+        // }
         
 
         const products = await Product
         .find(findQuery)
-        .sort(sortQuery)
+        // .sort(sortQuery)
         // .limit(per_page)
         // .skip(page)
-        console.log(products)
+        // console.log(products)
         res.status(200).json({
             status: 'success',
             result: products.length,
