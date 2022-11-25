@@ -11,8 +11,8 @@ This is an api for an e-commerce shop.
 
 ### Links
 
-<!-- - Solution URL: https://github.com/KorkuTegbe/Blog-API
-- Live Site URL: https://myblogapi.cyclic.app/ -->
+- Solution URL: https://github.com/KorkuTegbe/korjani-API
+- Live Site URL: 
 ---
 ## Requirements
 <details>
@@ -54,7 +54,6 @@ This is an api for an e-commerce shop.
 |  owner     | ref User  |  required |
 |  color |   string |  required,  |
 |  price |  number |  required, default: 0 |
-|  quantity |  number |  required, default: 1 |
 |  createdAt |  date |  required |
 |  updatedAt  |  date |  required  |
 
@@ -168,13 +167,12 @@ This is an api for an e-commerce shop.
 {
   "name": "Product 1",
   "desc": "about product 1",
-  "img": "img.jpg",
+  "imageg": "/uploads/img.jpg",
   "categories": [
     "product", "for sale"
   ],
   "size": "size",
   "color": "color",
-  "quantity": 2,
   "price" : 20
 }
 ```
@@ -198,7 +196,6 @@ This is an api for an e-commerce shop.
         "size": "size",
         "color": "color",
         "price": 20,
-        "quantity": 2,
         "owner": "userId3894r5",
         "createdAt": "2022-11-17T21:09:27.866Z",
         "updatedAt": "2022-11-19T20:43:39.707Z",
@@ -250,7 +247,6 @@ This is an api for an e-commerce shop.
             "size": "size",
             "color": "color",
             "price": 20,
-            "quantity": 2,
             "owner": "userId3894r5",
             "createdAt": "2022-11-17T21:09:27.866Z",
             "updatedAt": "2022-11-21T10:27:54.237Z",
@@ -280,7 +276,7 @@ This is an api for an e-commerce shop.
 ```
 {
     status: 'success',
-    message: 'Blog deleted'
+    message: 'Product deleted'
 }
 ```
  - error
@@ -298,19 +294,21 @@ This is an api for an e-commerce shop.
 - Method: GET
 - Query params: 
     - page (default: 1)
-    - per_page (default: 20)
-    - state(default: 'published')
-    - created_at
-    - author
-    - title
-    - tags
+    - per_page (default: 10)
+    - createdAt
+    - name
+    - price
+    - size
+    - color
+    - categories
+
 
 - Responses
     - Success
 ```
 {
     status: 'success',
-    results: 20,
+    results: 10,
     data: {
         [{products}]
     }
@@ -326,9 +324,9 @@ This is an api for an e-commerce shop.
 ```
 
 
-### Get A Published Blog (all users - logged in or out)
+### Get A product (all users - logged in or out)
 
-- Route: /api/blog/blogId
+- Route: /api/products/productId
 - Method: GET
 
 - Responses
@@ -336,22 +334,24 @@ This is an api for an e-commerce shop.
     - Success
 ```
 {
-    status: 'success',
-    data: {
-        "blog": {
-      "_id": "blogId",
-      "title": "blog title",
-      "tags": [blog tags],
-      "author": {
-        "first_name": "first_name",
-        "last_name": "last_name",
-        "id": "authorId"
-      },
-      "state": "published",
-      "read_count": 0,
-      "createdAt": "2022-11-05T23:56:33.095Z",
-      "updatedAt": "2022-11-06T17:03:04.565Z",
-      "reading_time": "1"
+    "status": "success",
+    "data": {
+        "product": {
+            "_id": "productId",
+            "name": "a new name",
+            "desc": "here's a description",
+            "img": "img.jpg",
+            "categories": [
+            "product", "for sale"
+              ],
+            "size": "size",
+            "color": "color",
+            "price": 20,
+            "owner": "userId3894r5",
+            "createdAt": "2022-11-17T21:09:27.866Z",
+            "updatedAt": "2022-11-21T10:27:54.237Z",
+            "__v": 0
+        }
     }
 }
 ```
@@ -364,17 +364,19 @@ This is an api for an e-commerce shop.
 
 ```
 
-### Get owner blogs
+### Get owner's product
 
-- Route: /api/blog/userId
+- Route: /api/products/userId
 - Method: GET
 - Query params: 
     - page (default: 1)
-    - per_page (default: 20)
-    - state(default: 'published')
-    - created_at
-    - title
-    - tags
+    - per_page (default: 10)
+    - createdAt
+    - name
+    - price
+    - size
+    - color
+    - categories
 
 - Responses
 
@@ -382,9 +384,9 @@ Success
 ```
 {
     status: 'success',
-    results: 20,
+    results: 10,
     data: {
-        [{blogs}]
+        [{products}]
     }
 }
 ```
@@ -397,6 +399,185 @@ Success
 
 ```
 ---
+
+### Create Order (logged in user)
+
+- Route: /api/orders/
+- Method: POST
+- Header
+    - Authorization: Bearer {token}
+- Body: 
+```
+{
+  "products": [
+      {
+        "productId": "12345jfhgs",
+        "quantity": 3
+      }
+  ],
+  "address": { 
+    "digital":"ga-250-321"
+  }
+}
+```
+
+- Responses
+
+  - Success
+```
+{
+  "status": "success",
+    "data": {
+        "order": {
+            "userId": "9000000jvnie09",
+            "products": {
+                {
+                  "productId": "637ffd05f5c5b3b6a1ec6242",
+                  "quantity": 3,
+                  "_id": "jk3940234"
+                }
+            ],
+            "address": {
+                "digital-address": "GA-350-9812"
+            },
+            "status": "pending",
+            "createdAt": "2022-11-25T21:49:54.000Z",
+            "updatedAt": "2022-11-25T21:49:54.000Z",
+            "id": "634fgdada"
+        }
+    }
+}
+```
+- error
+```
+{
+  "status": "error",
+  "message": error message,
+}
+
+```
+---
+
+### Update Order (logged in user)
+
+- Route: /api/orders/orderId
+- Method: PATCH
+- Header
+    - Authorization: Bearer {token}
+- Body
+```
+{
+  "products": [
+    {
+        "productId": "637d707f48b407f0bf57f2cb",
+        "quantity": 12
+    },
+    {
+        "productId": "637d707f48b407f0bf57f2cb",
+        "quantity": 12
+    }
+    ],
+    "address": {
+        "street": "ofori tibo"
+    }
+}
+
+```
+- Responses
+    - success
+```
+{
+    "status": "success",
+    "data": {
+        "update": {
+          "userId": "637d04e1b62da291b8c861ee",
+          "products": [
+              {
+                  "productId": "637d707f48b407f0bf57f2cb",
+                  "quantity": 12,
+                  "_id": "134vr32r45"
+              }
+          ],
+          "address": {
+              "street": "ofori tibo"
+          },
+          "status": "pending",
+          "createdAt": "2022-11-25T21:49:54.000Z",
+          "updatedAt": "2022-11-25T21:53:45.328Z",
+          "id": "63813881a9b2b98cf401321a"
+        }
+    }
+}
+```
+ - error
+```
+{
+  "status": "error",
+  "message": error message,
+}
+
+```
+
+### Delete Order 
+
+- Route: /api/orders/orderId
+- Method: DELETE
+- Header:
+    - Authorization: Bearer {token}
+
+- Responses
+    - Success
+```
+{
+    status: 'success',
+    message: 'Order deleted'
+}
+```
+ - error
+```
+{
+  "status": "error",
+  "message": error message,
+}
+
+```
+
+### Get Orders (all users - logged in or out)
+
+- Route: /api/orders/userId
+- Method: GET
+- Request Params
+    - userId
+- Query params: 
+    - page (default: 1)
+    - per_page (default: 10)
+    - createdAt
+    - name
+    - price
+    - size
+    - color
+    - categories
+
+
+- Responses
+    - Success
+```
+{
+    status: 'success',
+    results: 10,
+    data: {
+        [{products}]
+    }
+}
+```
+- error
+```
+{
+  "status": "error",
+  "message": error message,
+}
+
+```
 
 ...
 
