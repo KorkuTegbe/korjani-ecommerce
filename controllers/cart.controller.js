@@ -3,29 +3,15 @@ const Cart = require('../models/cart.model')
 const Product = require('../models/product.model')
 
 exports.addToCart = async (req,res,next) => {
-    const {products, productId,quantity} = req.body
-    // const product = await Product.findById(productId)
-    // console.log(products[0].productId)
-    let product;
-    for(let i = 0; i<products.length; i++){
-        let product =  await Product.findById(products[i].productId)
-        console.log(product.price)
-    }
-    
-    
+    const { products } = req.body
     try{
         const cart = new Cart({
-            userId : req.user.id,
-            products: {
-                productId,
-                quantity,
-                amount: product.price * quantity
-            }
+            userId: req.user.id,
+            products
         })
-        // await cart.save()
-        res.status(200).json({
+        cart.save()
+        res.status(201).json({
             status: 'success',
-            message: `${product.name} added to cart`,
             data: {
                 cart
             }
@@ -38,10 +24,33 @@ exports.addToCart = async (req,res,next) => {
     }
 }
 
-exports.uodateCart = async (req,res,next) => {
+exports.updateCart = async (req,res,next) => {
+    const {body}  = req.body
+    const { cartId } = req.params
     
     try{
+        const cart = await Cart.findById(cartId)
         
+        // when product is not found
+        if(!cart) return next(new appError(404, 'not found'))
+
+        // is user product owner? do update
+        if(cart.userId == req.user.id){
+            // console.log(`cartOwner: ${cart.userId}, id: ${req.user.id}`)
+            const update = await Cart.findByIdAndUpdate(cartId, body, {
+                new: true,
+                runValidators: true,
+            })
+
+            res.status(200).json({
+                status: 'success',
+                data: {
+                    update
+                }
+            })
+        }else{
+            return next(new appError(403, 'Unauthorized'))
+        }
     }catch(err){
         res.status(500).json(err)
     }
@@ -57,7 +66,14 @@ exports.removeFromCart = async (req,res,next) => {
 
 exports.getCart = async (req,res) => {
     try{
-        
+        const carts = await Cart.find()
+        res.status(200).json({
+            status: 'success',
+            results: carts.length,
+            data: {
+                carts
+            }
+        })
     }catch(err){
         return new appError(err.statusCode, err)
     }
