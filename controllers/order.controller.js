@@ -5,7 +5,7 @@ exports.createOrder = async (req,res,next) => {
     const {products,address} = req.body
     try{
         const order = new Order({
-            userId: req.user,
+            userId: req.user.id,
             products,
             address
         })
